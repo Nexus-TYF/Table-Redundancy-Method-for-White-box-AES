@@ -279,7 +279,22 @@ int xor[]={0,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0,1,0,0,1,0,
 1,1,0,0,1,1,0,1,0,0,1,0,1,1,0,1,0,0,1,1,
 0,0,1,0,1,1,0,1,0,0,1,0,1,1,0,0,1,1,0,1,
 0,0,1,1,0,0,1,0,1,1,0,0,1,1,0,1,0,0,1,0,
-1,1,0,1,0,0,1,1,0,0,1,0,1,1};
+1,1,0,1,0,0,1,1,0,0,1,0,1,1,0};
+
+//8bit Hamming weight table
+int HW[]={0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,
+3,3,4,2,3,3,4,3,4,4,5,1,2,2,3,2,3,3,4,2,
+3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,
+5,5,6,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,
+3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,2,3,3,4,3,
+4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,
+5,5,6,5,6,6,7,1,2,2,3,2,3,3,4,2,3,3,4,3,
+4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,2,
+3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,
+5,5,6,4,5,5,6,5,6,6,7,2,3,3,4,3,4,4,5,3,
+4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,
+6,6,7,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,4,
+5,5,6,5,6,6,7,5,6,6,7,6,7,7,8};
 
 uint8_t idM8[8]={0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 uint16_t idM16[16]={0x8000,0x4000,0x2000,0x1000,0x800,0x400,0x200,0x100,0x80,0x40,0x20,0x10,0x8,0x4,0x2,0x1};
@@ -359,7 +374,7 @@ void randM8(M8 *Mat)//randomize Matrix 8*8
     InitRandom((randseed++)^((unsigned int)time(NULL)));
     for(int i=0;i<8;i++)
     {
-        (*Mat).M[i]=random();
+        (*Mat).M[i]=cus_random();
     }
 }
 void randM16(M16 *Mat)//randomize Matrix 16*16 
@@ -367,7 +382,7 @@ void randM16(M16 *Mat)//randomize Matrix 16*16
     InitRandom((randseed++)^((unsigned int)time(NULL)));
     for(int i=0;i<16;i++)
     {
-        (*Mat).M[i]=random();
+        (*Mat).M[i]=cus_random();
     }
 }
 void randM32(M32 *Mat)//randomize Matrix 32*32 
@@ -375,7 +390,7 @@ void randM32(M32 *Mat)//randomize Matrix 32*32
     InitRandom((randseed++)^((unsigned int)time(NULL)));
     for(int i=0;i<32;i++)
     {
-        (*Mat).M[i]=random();
+        (*Mat).M[i]=cus_random();
     }
 }
 void randM64(M64 *Mat)//randomize Matrix 64*64 
@@ -385,8 +400,8 @@ void randM64(M64 *Mat)//randomize Matrix 64*64
     for(int i=0;i<64;i++)
     {
         m=(uint32_t*)&((*Mat).M[i]);
-        *(m+1)=random();
-        *m=random();
+        *(m+1)=cus_random();
+        *m=cus_random();
     }
 }
 void randM128(M128 *Mat)//randomize Matrix 128*128 
@@ -396,11 +411,11 @@ void randM128(M128 *Mat)//randomize Matrix 128*128
     for(int i=0;i<128;i++)
     {
         m=(uint32_t*)&((*Mat).M[i][0]);
-        *(m+1)=random();
-        *m=random();
+        *(m+1)=cus_random();
+        *m=cus_random();
         m=(uint32_t*)&((*Mat).M[i][1]);
-        *(m+1)=random();
-        *m=random();
+        *(m+1)=cus_random();
+        *m=cus_random();
     }
 }
 void identityM8(M8 *Mat)//identity matrix 8*8
@@ -1008,6 +1023,29 @@ int xorU128(uint64_t n[])// uint128_t internal xor
     if(xorU64(temp)) return 1;
     else return 0;
 }
+int HWU8(uint8_t n)// uint8_t HW
+{
+    return HW[n];
+}
+int HWU16(uint16_t n)// uint16_t HW
+{
+    uint8_t* u=(uint8_t*)&n;
+    return HWU8(*u)+HWU8(*(u+1));
+}
+int HWU32(uint32_t n)// uint32_t HW
+{
+    uint16_t* u=(uint16_t*)&n;
+    return HWU16(*u)+HWU16(*(u+1));
+}
+int HWU64(uint64_t n)// uint64_t HW
+{
+    uint32_t* u=(uint32_t*)&n;
+    return HWU32(*u)+HWU32(*(u+1));
+}
+int HWU128(uint64_t n[])// uint128_t HW
+{
+    return HWU64(n[0])+HWU64(n[1]);
+}
 void printU8(uint8_t n)//printf uint8_t
 {
     printf("0x%x\n",n);
@@ -1317,6 +1355,28 @@ void genMatpairM8(M8 *Mat,M8 *Mat_inv)//generate 8*8 reversible matrix and its i
             trail[i][2]=q;
         }   
     }
+    /* *** the example for mitigating DCA attack
+    int extratimes=0;
+    if(antiDCA)
+    {
+        for(int i=0;i<8;i++)
+        {
+            while(HW8((*Mat).M[i])==1)
+            {
+                p=rand()%8;
+                while(p==i)
+                {
+                    p=rand()%8;
+                }
+                (*Mat).M[i]^=(*Mat).M[p];
+                trail[M8N+extratimes][0]=1;
+                trail[M8N+extratimes][1]=i;
+                trail[M8N+extratimes][2]=p;
+                extratimes++;
+            }
+        }
+    }
+    */
     for(int j=M8N-1;j>=0;j--)//generate inverse matrix
     {
         if(trail[j][0])//add
