@@ -4,12 +4,8 @@ int main(int argc, char * argv[])
 {
     unsigned char OUT[16];
     unsigned char OOUT[16];
-    int i;
     u8 expandedKey[176];
     u8 key[16] = {0};
-    uint64_t begin;
-    uint64_t end;
-    uint64_t ans = 0;
     
     expandKey (key, expandedKey);
     computeTables(expandedKey);
