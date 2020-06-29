@@ -14,8 +14,8 @@ u32 TypeII_final[16][256];//Type II
 
 u8 TypeIV[16][16];
 
-static u32 nibble[16] = {0x01, 0x02, 0x0C, 0x05, 0x07, 0x08, 0x0A, 0x0F, 0x04, 0x0D, 0x0B, 0x0E, 0x09, 0x06, 0x00, 0x03};
-static u32 nibble_inv[16] = {0x0e, 0x00, 0x01, 0x0f, 0x08, 0x03, 0x0d, 0x04, 0x05, 0x0c, 0x06, 0x0a, 0x02, 0x09, 0x0b, 0x07}; 
+static u8 nibble[16] = {0x01, 0x02, 0x0C, 0x05, 0x07, 0x08, 0x0A, 0x0F, 0x04, 0x0D, 0x0B, 0x0E, 0x09, 0x06, 0x00, 0x03};
+static u8 nibble_inv[16] = {0x0e, 0x00, 0x01, 0x0f, 0x08, 0x03, 0x0d, 0x04, 0x05, 0x0c, 0x06, 0x0a, 0x02, 0x09, 0x0b, 0x07}; 
 
 void printstate(unsigned char * in){
         for(int i = 0; i < 16; i++) {
@@ -752,99 +752,4 @@ void aes_128_table_encrypt (u8 input[16], u8 output[16]) {
 
     for (int i = 0; i < 16; i++)
         output[i] = input[i];
-    
-
-
-    /*
-    shiftRows (input);
-    u8 in_state[16];
-    for(int k = 0; k < 16; k++)
-    {
-        in_state[k] = input[k];
-    }
-    int i = 8;
-    for(int fault = 0; fault < 256; fault++)
-    {
-        for(int k = 0; k < 16; k++)
-        {
-            input[k] = in_state[k];
-        }
-        for (int j = 0; j < 4; j++)
-        {
-            if(j == 0) a = TypeII[i][4*j + 0][fault];
-            else a = TypeII[i][4*j + 0][input[4*j + 0]];
-            b = TypeII[i][4*j + 1][input[4*j + 1]];
-            c = TypeII[i][4*j + 2][input[4*j + 2]];
-            d = TypeII[i][4*j + 3][input[4*j + 3]];
-
-            aa = TypeIV[i][24*j + 0][(a >> 28) & 0xf][(b >> 28) & 0xf];
-            bb = TypeIV[i][24*j + 1][(c >> 28) & 0xf][(d >> 28) & 0xf];
-            cc = TypeIV[i][24*j + 2][(a >> 24) & 0xf][(b >> 24) & 0xf];
-            dd = TypeIV[i][24*j + 3][(c >> 24) & 0xf][(d >> 24) & 0xf];
-            input[4*j + 0] = (TypeIV[i][24*j + 4][aa][bb] << 4) | TypeIV[i][24*j + 5][cc][dd];
-
-            aa = TypeIV[i][24*j + 6][(a >> 20) & 0xf][(b >> 20) & 0xf];
-            bb = TypeIV[i][24*j + 7][(c >> 20) & 0xf][(d >> 20) & 0xf];
-            cc = TypeIV[i][24*j + 8][(a >> 16) & 0xf][(b >> 16) & 0xf];
-            dd = TypeIV[i][24*j + 9][(c >> 16) & 0xf][(d >> 16) & 0xf];
-            input[4*j + 1] = (TypeIV[i][24*j + 10][aa][bb] << 4) | TypeIV[i][24*j + 11][cc][dd];
-
-            aa = TypeIV[i][24*j + 12][(a >> 12) & 0xf][(b >> 12) & 0xf];
-            bb = TypeIV[i][24*j + 13][(c >> 12) & 0xf][(d >> 12) & 0xf];
-            cc = TypeIV[i][24*j + 14][(a >>  8) & 0xf][(b >>  8) & 0xf];
-            dd = TypeIV[i][24*j + 15][(c >>  8) & 0xf][(d >>  8) & 0xf];
-            input[4*j + 2] = (TypeIV[i][24*j + 16][aa][bb] << 4) | TypeIV[i][24*j + 17][cc][dd];
-
-            aa = TypeIV[i][24*j + 18][(a >>  4) & 0xf][(b >>  4) & 0xf];
-            bb = TypeIV[i][24*j + 19][(c >>  4) & 0xf][(d >>  4) & 0xf];
-            cc = TypeIV[i][24*j + 20][(a >>  0) & 0xf][(b >>  0) & 0xf];
-            dd = TypeIV[i][24*j + 21][(c >>  0) & 0xf][(d >>  0) & 0xf];
-            input[4*j + 3] = (TypeIV[i][24*j + 22][aa][bb] << 4) | TypeIV[i][24*j + 23][cc][dd];
-
-            a = TypeIII[i][4*j + 0][input[4*j + 0]];
-            b = TypeIII[i][4*j + 1][input[4*j + 1]];
-            c = TypeIII[i][4*j + 2][input[4*j + 2]];
-            d = TypeIII[i][4*j + 3][input[4*j + 3]];
-
-            aa = TypeIV[i][24*j + 0][(a >> 28) & 0xf][(b >> 28) & 0xf];
-            bb = TypeIV[i][24*j + 1][(c >> 28) & 0xf][(d >> 28) & 0xf];
-            cc = TypeIV[i][24*j + 2][(a >> 24) & 0xf][(b >> 24) & 0xf];
-            dd = TypeIV[i][24*j + 3][(c >> 24) & 0xf][(d >> 24) & 0xf];
-            input[4*j + 0] = (TypeIV[i][24*j + 4][aa][bb] << 4) | TypeIV[i][24*j + 5][cc][dd];
-
-            aa = TypeIV[i][24*j + 6][(a >> 20) & 0xf][(b >> 20) & 0xf];
-            bb = TypeIV[i][24*j + 7][(c >> 20) & 0xf][(d >> 20) & 0xf];
-            cc = TypeIV[i][24*j + 8][(a >> 16) & 0xf][(b >> 16) & 0xf];
-            dd = TypeIV[i][24*j + 9][(c >> 16) & 0xf][(d >> 16) & 0xf];
-            input[4*j + 1] = (TypeIV[i][24*j + 10][aa][bb] << 4) | TypeIV[i][24*j + 11][cc][dd];
-
-            aa = TypeIV[i][24*j + 12][(a >> 12) & 0xf][(b >> 12) & 0xf];
-            bb = TypeIV[i][24*j + 13][(c >> 12) & 0xf][(d >> 12) & 0xf];
-            cc = TypeIV[i][24*j + 14][(a >>  8) & 0xf][(b >>  8) & 0xf];
-            dd = TypeIV[i][24*j + 15][(c >>  8) & 0xf][(d >>  8) & 0xf];
-            input[4*j + 2] = (TypeIV[i][24*j + 16][aa][bb] << 4) | TypeIV[i][24*j + 17][cc][dd];
-
-            aa = TypeIV[i][24*j + 18][(a >>  4) & 0xf][(b >>  4) & 0xf];
-            bb = TypeIV[i][24*j + 19][(c >>  4) & 0xf][(d >>  4) & 0xf];
-            cc = TypeIV[i][24*j + 20][(a >>  0) & 0xf][(b >>  0) & 0xf];
-            dd = TypeIV[i][24*j + 21][(c >>  0) & 0xf][(d >>  0) & 0xf];
-            input[4*j + 3] = (TypeIV[i][24*j + 22][aa][bb] << 4) | TypeIV[i][24*j + 23][cc][dd];
-        }  
-            //Round 10
-            shiftRows(input);
-            for (int j = 0; j < 16; j++) {
-                input[j] = TypeII[9][j][input[j]];
-            }
-
-            for (int i = 0; i < 16; i++)
-                output[i] = input[i];
-            printstate(output);
-    }*/
 }
-//   shiftRows(input);
-//   for (int j = 0; j < 16; j++) {
-//     input[j] = TypeII[9][j][input[j]];
-//   }
-
-//   for (int i = 0; i < 16; i++)
-//     output[i] = input[i];

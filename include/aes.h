@@ -43,7 +43,7 @@ void shiftRows (u8 state[16]);
 void addRoundKey (u8 state[16], u8 roundKey[16]);
 void mixColumns (u8 state[16]);
 void expandKey (u8 key[16], u8 expandedKey[176]);
-void aes_128_encrypt (u8 input[16], u8 output[16]);
+void aes_128_encrypt (u8 input[16], u8 key[16], u8 output[16]);
 
 
 #endif // AES_H
