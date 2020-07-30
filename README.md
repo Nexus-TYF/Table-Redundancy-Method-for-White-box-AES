@@ -21,4 +21,4 @@ $ ./WBAES
 
 ## Included libraries
 1. [WBMatrix](https://github.com/Nexus-TYF/WBMatrix)<br>
-2. [WhiteBoxAES](https://github.com/Gr1zz/WhiteBoxAES)<br>
+2. [CEJO-whitebox-AES](https://github.com/Nexus-TYF/CEJO-whitebox-AES)<br>
