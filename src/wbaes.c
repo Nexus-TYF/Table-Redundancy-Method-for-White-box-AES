@@ -1,4 +1,4 @@
-#include "genTables.h"
+#include "wbaes.h"
 
 u32 TypeII_to[6][16][256];//Type II
 u32 TypeIII_to[6][16][256];//Type III
